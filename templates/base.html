@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<div id="main">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="2iCTech Stocker">
+        <title>{%block title %}Stocker{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="/static/css/base/base.css">
+        <link rel="stylesheet" href="/static/css/base/custom_popover.css">
+        <link rel="icon" href="data:;base64,=">
+        {% block main_css %}{% endblock %}
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+            integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    </head>
+    <body class="body-wrapper">
+        <nav class="navbar fixed-top">
+            <div class="container-fluid">
+                <div>
+                    <a class="navbar-brand bg-light" href="/"><img src="/static/images/2ic-icon.png" width="30" height="30" 
+                            class="d-inline-block align-top" alt=""></a>
+                    <span class="d-inline-block align-top pt-1"><a href="/index" style="color:white;">Stocker</a></span>
+                </div>
+                <div style="float:right;">
+                    {% if current_user.is_authenticated %}
+                    {% if 'Staff' not in current_user.roles %}
+                    <a class="sign-in-out" href="/admin/account">Account</a>
+                    {% endif %}
+                    <a class="sign-in-out" href="/auth/sign_out">Sign Out </a>
+                    {% else %}
+                    {% if '/sign_up' not in url_for(request.endpoint) %}
+                    <a class="sign-in-out" href="/admin/sign_up">Open a New Account </a>
+                    {% endif %}
+                    {% if '/sign_in' not in url_for(request.endpoint) %}
+                    <a class="sign-in-out" href="/auth/sign_in">Sign In </a>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+        <div id="appMsg" style="width:100%; text-align:center; margin-top:50px;">&nbsp;</div>
+        <div id="landscape-message">
+            <h4 class="text-center pt-4">Stocker works best in Portrait Orientation.<br>Please rotate your device.</h4>
+        </div>
+        <div class="container justify-content-center" id="content" style="margin-top:1px;">
+            <div class="row" style="margin-bottom:1px;">
+                <div class="ml-2">{% block nav_crumb %}{% endblock %}</div>
+            </div>
+            {% if pLastMsg != 'None' %}
+            <div id="last_error" hidden>{{ pLastMsg }}</div>
+            {% else %}
+            <div id="last_error" hidden></div>
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div id="deleteModal" class="modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form action="#" id="delete_form" method="POST" role="form">
+                        <div class="modal-header">
+                            <h4 class="modal-title text-center" id="delMdlTitle">Delete</h4>
+                        </div>
+                        <div class="modal-body text-center">
+                            <p>Are you sure you want to delete the selected Record?</p>
+                            <p class="text-danger text-center">This action cannot be undone.</p>
+                            <input type="hidden" id="recId" name="recId" value="">
+                            <input type="hidden" name="_mode" id="_mode" value="D" />
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" class="btn btn-default" data-bs-dismiss="modal" value="Cancel">
+                            <input type="submit" id="deleleBtn" class="btn btn-delete" form="delete_form"
+                                value="Delete">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="msgModal" tabindex="-1" aria-labelledby="msgModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body msg-body border">
+                        <!-- <button type="button" id="msgCloseBtn" class="btn-close p-2" data-bs-dismiss="modal"
+                            aria-label="Close" style="float:right;"></button> -->
+                        <div class="inline-block">
+                            <span class='text-center p-2' id="msgModalText"></span>
+                            <div style="float:right;"><i class="fa fa-cog fa-spin" aria-hidden="true"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="warnModal" class="modal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title text-center" id="warnTitle"></h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p id="warnText"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-exit" data-bs-dismiss="modal" value="Cancel">
+                        </button>
+                        <input type="button" id="warnBtn" data-action="" data-bs-dismiss="modal" class="btn btn-edit"
+                            value="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="toast" role="alert" id="app-Toast" data-delay="2000" hidden>
+            <div class="toast-header justify-content-between">
+                <div><img src="/static/images/stocker-icon.png"/></div>
+                <div id="toast-title" style="display:inline-block; color:black; font-weight:bold;">Title</div>
+                <div style="float:right;">
+                    <small id="toast-time"></small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="toast-body" id="toast-msg"></div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/tablednd@1.0.5/dist/jquery.tablednd.min.js"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+        <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
+        <script src="/static/js/base/base{{ config.JS_EXT }}"></script>
+        {% block page_js %}{% endblock %}
+    </body>
+</div>
+</html>
