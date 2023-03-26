@@ -3,6 +3,7 @@ from cast import cast_it
 from os import getcwd
 from infra_red import handle_ir
 from shelly import handleShelly
+from cast_via_gtts import say_it
 import logging
 
 curr_path=getcwd()
@@ -28,6 +29,15 @@ def frontDoor():
     if not check_device_id(device_id):
         return "<p>Invalid Device Id in URL<p>"
     ret,msg=cast_it(device_id,'FRONTDOOR.MP3')
+    return "<p>"+msg+"</p>"
+
+@app.route("/SayIt")
+def testCast():
+    device_id=request.args.get('gd')
+    msg=request.args.get('msg')
+    if not check_device_id(device_id):
+        return "<p>Invalid Device Id in URL<p>"
+    ret,msg=say_it(device_id,msg)
     return "<p>"+msg+"</p>"
 
 @app.route("/ir/Sony")
