@@ -1,8 +1,8 @@
-from flask import Flask,request
+from flask import Flask,request,jsonify,make_response
 from cast import cast_it
 from os import getcwd
 from infra_red import handle_ir
-from shelly import handleShelly
+from shelly import handleShelly,setShellyButtonState,getShellyButtonState
 from cast_via_gtts import say_it
 import logging
 
@@ -56,6 +56,21 @@ def ir_panasonic(request):
 def carport_switch():
     switch_flag=request.args
     return handleShelly(switch_flag)
+
+@app.route("/button_on")
+def button_on():
+    resp=make_response("<html><body>Ok</body></html>",200)
+    return resp
+
+@app.route("/button_off")
+def button_off():
+    setShellyButtonState("off")
+    return jsonify("Button Off"),200
+
+@app.route("/button_state")
+def button_state():
+    return getShellyButtonState()
+
 # Helper to check device id.
 def check_device_id(id):
     if id not in ['S','L','D','B']:

@@ -1,4 +1,5 @@
 {"chromecast_devices":{"D":"Dining room speaker","L":"Living Room speaker","B":"Bed room speaker","S":"Study Speaker"},
 "shelly_switch_ip": "192.168.86.27",
+"shelly_button_ip": "182.168.86.249",
 "mp3_host_ip":"192.168.86.150:8200",
 "dsmart_ir_ip":"192.168.86.48:8000"}

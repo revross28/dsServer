@@ -10,6 +10,7 @@ class Settings:
     adafruit_io_key=""
     db_path=""
     shelly_switch_ip=""
+    shelly_button_ip=""
     mp3_host_ip=""
     dsmart_ir_ip=""
     chromecast_devices=[]
@@ -33,6 +34,7 @@ class Settings:
                 self.shelly_switch_ip=data['shelly_switch_ip']
                 self.mp3_host_ip=data["mp3_host_ip"]
                 self.dsmart_ir_ip=data["dsmart_ir_ip"]
+                self.shelly_button_ip=data["shelly_button_ip"]
             except Exception as err:
                 print("Exception while openning json file", str(err))
         else:
