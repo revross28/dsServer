@@ -87,7 +87,6 @@ def handle_ir(request):
 #
 def send_ir(device_name,address_code,command_key):
     command_code=ir_codes[address_code][command_key]
-    # "http://dsmart-ir.local:8000/ir_request"
     ir_URL="http://"+dsmart_ir_ip+"/ir_request?address="+address_code+"&command="+str(command_code)
     
     # Check if the command requires 15 bits (Sony only.)

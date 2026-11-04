@@ -18,9 +18,9 @@ global button_state
 def handleShelly(switch_flag):
     try:
         if switch_flag.get("on") is not None:
-            switch_URL="http://Admin:GoFloGo@"+shelly_switch_ip+"/relay/1?turn=on"
+            switch_URL="http://Admin:GoFloGo#2026@"+shelly_switch_ip+"/relay/1?turn=on"
         if switch_flag.get("off") is not None:
-            switch_URL="http://Admin:GoFloGo@"+shelly_switch_ip+"/relay/1?turn=off"
+            switch_URL="http://Admin:GoFloGo#2026@"+shelly_switch_ip+"/relay/1?turn=off"
         resp=get(switch_URL)
         return resp.text,resp.status_code
     except Exception as e:
@@ -32,7 +32,7 @@ def setShellyButtonState(state):
         if state not in ['off','on']:
             logger.exception("Invalid Request to set Shelly")
         else:
-            logger.info("Button State is changing to "+state)
+            logger.debug("Button State is changing to "+state)
         with open('button_state.json', 'w') as f:
             json.dump({'button_state':state}, f)
     except Exception as e:
