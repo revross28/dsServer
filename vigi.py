@@ -7,7 +7,7 @@ import json
 import logging
 from datetime import datetime,timezone,timedelta
 logger = logging.getLogger(__name__)
-logging.getLogger("requests").setLevel(logging.DEBUG)
+logging.getLogger("requests").setLevel(logging.ERROR)
 
 curr_settings=Settings()
 
@@ -41,8 +41,8 @@ def process_vigi_event():
     # Take an hour off sunset to match other automation settings.
     sunset_time = datetime.fromisoformat(sun_data['sunset']) - timedelta(hours=1)
     logger.debug(f"Current Time: {curr_time}, Sunrise Time: {sunrise_time}, Sunset Time: {sunset_time}")
-    if sunrise_time < curr_time < sunset_time:
-        event_actions['night_light']=False
+    if sunrise_time < curr_time > sunset_time:
+        event_actions['night_light']=True
 
     return event_actions
 

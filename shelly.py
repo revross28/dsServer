@@ -4,6 +4,7 @@
 #
 
 from requests import get
+from requests.auth import HTTPBasicAuth
 from app_settings import Settings
 import json
 import logging
@@ -15,13 +16,12 @@ shelly_switch_ip=curr_settings.shelly_switch_ip
 shelly_button_ip=curr_settings.shelly_button_ip
 global button_state
 
-def handleShelly(switch_flag):
+def handleShelly(switch):
     try:
-        if switch_flag.get("on") is not None:
-            switch_URL="http://Admin:GoFloGo#2026@"+shelly_switch_ip+"/relay/1?turn=on"
-        if switch_flag.get("off") is not None:
-            switch_URL="http://Admin:GoFloGo#2026@"+shelly_switch_ip+"/relay/1?turn=off"
-        resp=get(switch_URL)
+        url = f"http://{shelly_switch_ip}/relay/1"
+        credentials = HTTPBasicAuth("Admin", "GoFloGo#2026")
+        params = {"turn": switch} 
+        resp = get(url, params=params, auth=credentials)
         return resp.text,resp.status_code
     except Exception as e:
         logger.exception(e,exc_info=True)

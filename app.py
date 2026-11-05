@@ -18,7 +18,7 @@ logging.basicConfig(
     )
 app = Flask(__name__)
 
-logging.getLogger("urllib3").setLevel(logging.DEBUG)
+logging.getLogger("urllib3").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 @app.route("/")
 def info():
@@ -43,7 +43,7 @@ def vigiEvent():
         ret,msg=cast_it('D','FRONTDOOR.MP3')
     if actions['night_light']:
         logger.debug("Attempting to turn on Shelly Carport Light")
-        ret,msg=handleShelly({"on":True})
+        ret,msg=handleShelly('on')
     return jsonify({"message": "Event processed successfully"}), 200
 
 @app.route("/SayIt")
@@ -71,10 +71,6 @@ def ir_samsung(request):
 def ir_panasonic(request):
    return ir_generic(request)
 @app.route("/carport_light_switch")
-
-def carport_switch():
-    switch_flag=request.args
-    return handleShelly(switch_flag)
 
 @app.route("/button_on")
 def button_on():
